@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./app:/app
+      - ./app:/var/www/html
     ports:
       - "8080:8080"
     # command: ["make", "dev"]

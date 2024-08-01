@@ -5,17 +5,16 @@ FROM php:7.4-fpm
 WORKDIR /app
 
 # Install necessary PHP extensions
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+RUN docker-php-ext-install mysqli pdo pdo_mysql && docker-php-ext-enable mysqli
 
 # Copy application files
-COPY app/. .
+COPY app/. /var/www/html/
 
 # Set appropriate permissions for web server user (if needed)
-RUN chown -R www-data:www-data /app
+RUN chown -R www-data:www-data /var/www/html
 
 # Expose the port on which the app will run (default for PHP-FPM is 9000)
-EXPOSE 8080
-ENV NODE_ENV=production
+EXPOSE 80
 
 # Start PHP-FPM server
-CMD ["php-fpm"]
+# CMD ["php-fpm"]

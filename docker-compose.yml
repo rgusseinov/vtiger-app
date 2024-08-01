@@ -1,14 +1,16 @@
 version: '3.8'
 
 services:
+  php:
+    build:
+      context: .
   app:
     image: ruslan0688/vtiger-app
     build:
       context: .
       dockerfile: Dockerfile.production
-    # command: ["make", "test"]
     volumes:
-      - ./app:/app
+      - ./app:/var/www/html
     ports:
       - "8080:8080"
     depends_on:
@@ -21,7 +23,6 @@ services:
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
   db:
     image: mysql:5.7
-    hostname: mysql
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD}
@@ -31,14 +32,19 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - db-data:/var/lib/mysql
-      - ./src/main/resources/db/init.sql:/data/application/init.sql
-    command: --init-file /data/application/init.sql
+      - "./db:/docker-entrypoint-initdb.d" # this is how we persist a sql db even when container stops
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root --password=$${MYSQL_ROOT_PASSWORD}"]
       interval: 5s
       timeout: 5s
       retries: 5
+  www:
+    image: php:7.4-apache
+    volumes:
+      - "./app:/var/www/html" # sync the current dir on local machine to the dir of container
+    ports:
+      - 8083:80
+      - 443:443 # for future ssl traffic
 
 volumes:
   db-data:
