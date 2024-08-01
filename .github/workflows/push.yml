@@ -34,7 +34,7 @@ jobs:
           context: .
           file: Dockerfile.production
           push: true
-          tags: ruslan0688/devops-for-programmers-project-74
+          tags: ruslan0688/vtiger-app
 
       - name: Run Tests
         run: make ci
