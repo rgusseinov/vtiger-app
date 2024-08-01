@@ -1,0 +1,21 @@
+# Use an official PHP 7.4 FPM image
+FROM php:7.4-fpm
+
+# Set working directory
+WORKDIR /app
+
+# Install necessary PHP extensions
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+
+# Copy application files
+COPY app/. .
+
+# Set appropriate permissions for web server user (if needed)
+RUN chown -R www-data:www-data /app
+
+# Expose the port on which the app will run (default for PHP-FPM is 9000)
+EXPOSE 8080
+ENV NODE_ENV=production
+
+# Start PHP-FPM server
+CMD ["php-fpm"]
